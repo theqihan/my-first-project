@@ -1,0 +1,204 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<windows.h>
+typedef struct PersonInfo{
+	char name[1024];
+	char phone[1024];
+}PersonInfo;
+ 
+#define SIZE 1000   //定义size的长度
+ 
+typedef struct AddrBook{
+	PersonInfo person_info[SIZE];
+	int size;
+}AddrBook;
+ 
+AddrBook g_addr_book;
+int p;
+int cnt = 0;
+char bin_name[1024];
+char bin_phone[1024];
+enum{
+	EXIT=0,
+	ADD,
+	DEL,
+	MODIFY,
+	FIND,     
+	PRINT,    
+	RECOVRY, 
+    FUZZY_SEARCH 
+};                                                             
+void Init(){
+	g_addr_book.size = 0;
+	// magic number
+	memset(g_addr_book.person_info, 0x0, sizeof(g_addr_book.person_info));
+	
+}
+
+int menu()
+{
+	printf("=====lqh======\n");
+	printf("1.添加\n");
+	printf("2.删除\n");
+	printf("3.修改\n");
+	printf("4.查找\n");
+	printf("5.显示\n");
+	printf("6.恢复\n");
+	printf("0.退出\n"); 
+	printf("=====lqh======\n");
+	int choice = 0;
+	scanf("%d",&choice);
+	return choice; 
+}
+
+void Add()
+{
+	printf("请输入你要添加的用户名\n");
+	scanf("%s",g_addr_book.person_info[g_addr_book.size].name);
+	printf("请输入你要添加的电话号码\n");
+	scanf("%s",g_addr_book.person_info[g_addr_book.size].phone);
+	++g_addr_book.size;
+}
+void Del()
+{
+	printf("请输入你想要删除的序号\n");
+	int num = 0;
+	int real_num ;  
+	scanf("%d", &real_num);
+	num = real_num - 1; 
+	p = num; 
+	if ((num < 0 && true)|| num > g_addr_book.size)
+	{
+		printf("删除不合法\n");
+	}  
+	strcpy(bin_name, g_addr_book.person_info[num].name);
+	strcpy(bin_phone , g_addr_book.person_info[num].phone);
+	if (real_num!=g_addr_book.size)
+	{
+		strcpy(g_addr_book.person_info[num].name,g_addr_book.person_info[g_addr_book.size-1].name);
+		strcpy(g_addr_book.person_info[num].phone,g_addr_book.person_info[g_addr_book.size-1].phone);
+	}
+	--g_addr_book.size;
+	printf("删除成功!\n");
+	cnt = 1;
+	return ;
+}
+void Modify()
+{
+	printf("请输入你要修改的序号");
+	int num2;
+	int real_num2;
+	scanf("%d",&real_num2);
+	num2 = real_num2 - 1;
+	if (num2<0||num2>=g_addr_book.size)
+	{
+		printf("你的修改不合法\n");
+		return;
+	}
+	printf("请输入修改后的用户名\n");
+	scanf("%s",g_addr_book.person_info[num2].name);
+	printf("请输入修改后的电话号码\n");
+	scanf("%s",g_addr_book.person_info[num2].phone);
+}
+
+void Find()
+{
+	printf("根据用户名查找\n");
+	char find_name [1024] = {0};
+	int count=0;
+	printf("请输入你要查找的用户名\n");
+	scanf("%s",find_name);
+	for(int i = 0; i < g_addr_book.size; ++i)
+	{
+		if(strcmp(g_addr_book.person_info[i].name,find_name)==0)
+		{
+			printf("已为您找到结果姓名：%s 电话号码：%s\n",g_addr_book.person_info[i].name,g_addr_book.person_info[i].phone);
+			++count;
+		}
+	}
+	if (count == 0)
+	{
+		printf("抱歉未能找到结果\n"); 
+	}
+	else
+	{
+		printf("共为您找到%d条结果\n",count);
+	}
+}
+void PrintF()
+{
+	int j;
+	printf("以下为所有用户信息\n");
+	for(int i = 0;i<g_addr_book.size;++i)
+	{
+		j = i+1;
+		printf("[%d] %s  %s\n",j,g_addr_book.person_info[i].name,g_addr_book.person_info[i].phone);
+	} 
+	printf("打印完成\n"); 
+	return;
+}
+void Recovry()
+{
+	if(cnt==0)
+	{
+		printf("没有可以为您恢复的数据\n"); 
+	} 
+	else
+	{
+	strcpy(g_addr_book.person_info[p].name , bin_name);
+	strcpy(g_addr_book.person_info[p].phone, bin_phone);
+	++g_addr_book.size;
+	printf("恢复成功\n");
+	}
+	cnt = 0;
+}
+int main()
+{
+	Init();
+	while(1)
+	{
+		int choice = menu();
+		switch (choice)
+		{
+		case ADD:
+			Add();
+			system("pause");
+			system("CLS");
+			break;
+		case DEL:
+		    Del();
+		    system("pause");
+		    system("CLS");
+			break;
+		case MODIFY:
+		    Modify();
+		    system("pause");
+		    system("CLS");
+			break;
+		case FIND:
+		    Find();
+		    system("pause");
+		    system("CLS");
+		    break;
+		case PRINT:
+		    PrintF();
+		    system("pause");
+		    system("CLS");
+			break;
+		case RECOVRY:
+			Recovry();
+			system("pause");
+			system("CLS");
+			break; 
+		case EXIT:
+			printf("Goodbye!\n");
+			system("pause"); 
+			return 0;
+		default:
+		    break; 
+		}
+	}
+	system("pause");
+	return 0;
+}
